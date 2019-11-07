@@ -1,80 +1,78 @@
-import java.util.*;
+package pracs;
+import java.util.Scanner;
+public class CRC {
+	public static void main(String args[])
+	{
+		Scanner sc=new Scanner(System.in);
+		int z[],m,n,d[],g[],r[],i,j;
+		System.out.println("Enter the no of data bits");
+		n=sc.nextInt();
+		System.out.println("Enter the no of Generator bits");
+		m=sc.nextInt();
+		d=new int[m+n];
+		g=new int[m];
+		System.out.println("Enter the data bits ");
+		for(i=0;i<n;i++)
+		{
+		d[i]=sc.nextInt();	
+		}
+		System.out.println("Enter the no of generator bits ");
+		for(j=0;j<m;j++)
+		{
+			g[j]=sc.nextInt();
+		}
+		for(i=0;i<m-1;i++)
+		{
+			d[n+i]=0;
+		}
+		r=new int[m+n];
+		for(i=0;i<m;i++)
+		{
+			r[i]=d[i];
+		}
+		z=new int[m];
+		for(i=0;i<m;i++)
+		{
+			z[i]=0;
+		}
+		
+		for(i=0;i<n;i++)
+		{
+			int k=0;
+			int msb=r[i];
+			for(j=i;j<m+i;j++)
+			{
+				if(msb==0)
+					r[j]=xor(r[j],z[k]);
+				else
+					r[j]=xor(r[j],g[k]);
+				k++;
+			}
+			r[m+i]=d[m+i];
+			
+		}
+		System.out.println("The code bits added are:");
+		
+			for(i=n;i<n+m-1;i++)
+			{
+				d[i]=r[i];
+				System.out.println(d[i]);
+			}
+			System.out.println("The code data is: ");
+			
+		for(i=0;i<n+m-1;i++)
+		{
+			System.out.println(d[i]);
+		}
+		}
+		public static int xor(int x,int y)
+		{
+			if(x==y)
+				return(0);
+			else
+				return(1);
+		}
+		
+	}
 
-class crc
-{
-    int EXOR(int x,int y)
-    {
-        if(x==y)
-            return 0;
-        else
-            return 1;
-    }	
-    
-    public static void main(String args[])
-    {
-        int i,j,k,m,n,gen[],store[],fr[],flag;
-        fr = new int[20];
-        store = new int[20];
-        gen = new int[20];
-        crc ob1 = new crc();
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the number of bits in generator and frame");
-        n = sc.nextInt();
-        m = sc.nextInt();
 
-        System.out.println("Enter the bits in generator");
-        for (i=1;i<=n;i++)
-            gen[i] = sc.nextInt();
-
-        System.out.println("Enter the bits in frame");
-        for (i=1;i<=m;i++)
-        {
-            fr[i] = sc.nextInt();
-            store[i] = fr[i];
-        }
-
-        for (i=m+1;i<=m+n-1;i++)                        //dataword ke baad ke (n-1)zeros
-            fr[i]=0;
-
-        for (j=1;j<=m;j++)
-        {
-            if(fr[j]==0)
-                for (k=1;k<=n;k++)
-                    fr[j+k-1] = ob1.EXOR(fr[j+k-1], gen[k]);
-            for (k=1;k<=n;k++)
-                fr[j+k-1] = ob1.EXOR(fr[j+k-1], gen[k]);
-        }
-
-        for (i=m+1;i<=m+n-1;i++)
-            store[i]=fr[i];
-        
-        System.out.println("The Transmitted bits are: ");
-        for (i=1;i<=m+n-1;i++)
-            System.out.println(store[i]+" ");
-
-        System.out.println("\nEnter the recieved bits");
-        for (i=1;i<=m+n-1;i++)
-            fr[i]=sc.nextInt();
-
-        for (j=1;j<=m;j++)
-        {
-            if(fr[j]==0)
-                for (k=1;k<=n;k++)
-                    fr[j+k-1] = ob1.EXOR(fr[j+k-1], gen[k]);
-            for (k=1;k<=n;k++)
-                fr[j+k-1] = ob1.EXOR(fr[j+k-1], gen[k]);
-        }
-    
-        flag=0;
-        for (i=m+1;i<=m+n-1;i++)
-            if(fr[i]==1)
-                flag=1;
-
-        if(flag==0)
-            System.out.println("No error");
-        else
-            System.out.println("Error");
-        
-    }
-    
-}
